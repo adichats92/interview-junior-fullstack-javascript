@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import axios from 'axios';
+import axios from '../axiosinstance';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Row, Col, Card } from 'react-bootstrap';
 
@@ -11,7 +11,7 @@ const NewCity: React.FC = () => {
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		axios
-			.post(`${import.meta.env.VITE_SERVER_BASE_URL}/api/cities`, {
+			.post(`/api/cities`, {
 				cityName,
 				count,
 			})

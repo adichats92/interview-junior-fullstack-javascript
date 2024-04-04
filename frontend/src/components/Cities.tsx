@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../axiosinstance';
 import CityDetails from './CityDetails';
 import {
 	Button,
@@ -10,6 +10,8 @@ import {
 	Row,
 	Pagination,
 	Modal,
+	Toast,
+	Col,
 } from 'react-bootstrap';
 
 interface City {
@@ -29,11 +31,13 @@ const Cities: React.FC = () => {
 	const [filteredCities, setFilteredCities] = useState<City[]>([]);
 	const [updatedCityName, setUpdatedCityName] = useState<string>('');
 	const [updatedCount, setUpdatedCount] = useState<string>('');
+	const [showToast, setShowToast] = useState<boolean>(false);
+	const [toastMessage, setToastMessage] = useState<string>('');
 
 	// to fetch all data from backend
 	// useEffect(() => {
 	// 	axios
-	// 		.get(`${import.meta.env.VITE_SERVER_BASE_URL}/api/cities`)
+	// 		.get(`/api/cities`)
 	// 		.then((res) => {
 	// 			const sortedCities = res.data.sort((a: City, b: City) =>
 	// 				a.cityName.localeCompare(b.cityName)
@@ -44,16 +48,18 @@ const Cities: React.FC = () => {
 	// }, []);
 
 	// to handle the details modal through cityDetails component
-	const handleShowModal = (city: any) => {
+	const handleShowModal = (city: City) => {
 		setSelectedCity(city);
 		setShowModal(true);
 	};
+
 	const handleShowEditModal = (city: City) => {
 		setSelectedCity(city);
 		setUpdatedCityName(city.cityName);
 		setUpdatedCount(city.count.toString());
 		setShowEditModal(true);
 	};
+
 	// to delete a city from database
 	const handleDeleteCity = async (cityId: string) => {
 		// the confirmation dialog
@@ -62,25 +68,24 @@ const Cities: React.FC = () => {
 		);
 		if (isConfirmed) {
 			try {
-				await axios.delete(
-					`${import.meta.env.VITE_SERVER_BASE_URL}/api/cities/${cityId}`
-				);
+				await axios.delete(`/api/cities/${cityId}`);
 				setCities(cities.filter((city) => city._id !== cityId));
 				setFilteredCities(filteredCities.filter((city) => city._id !== cityId));
+				setToastMessage('City deleted successfully');
+				setShowToast(true);
 			} catch (error) {
 				console.error(error);
 			}
 		}
 	};
+
 	// to update a city
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (!selectedCity) return;
 		try {
 			const { data: updatedCity } = await axios.put(
-				`${import.meta.env.VITE_SERVER_BASE_URL}/api/cities/${
-					selectedCity._id
-				}`,
+				`/api/cities/${selectedCity._id}`,
 				{
 					cityName: updatedCityName,
 					count: parseInt(updatedCount, 10),
@@ -92,6 +97,8 @@ const Cities: React.FC = () => {
 			);
 			setCities(updatedCities);
 			setFilteredCities(updatedCities);
+			setToastMessage('City updated successfully');
+			setShowToast(true);
 			setShowEditModal(false);
 		} catch (error) {
 			console.error(error);
@@ -103,11 +110,7 @@ const Cities: React.FC = () => {
 		const handler = setTimeout(() => {
 			if (searchInput.trim()) {
 				axios
-					.get(
-						`${
-							import.meta.env.VITE_SERVER_BASE_URL
-						}/api/cities/name/${searchInput}`
-					)
+					.get(`/api/cities/name/${searchInput}`)
 					.then((response) => {
 						setFilteredCities(response.data);
 					})
@@ -115,7 +118,7 @@ const Cities: React.FC = () => {
 			} else {
 				// to fetch all cities if search input is empty
 				axios
-					.get(`${import.meta.env.VITE_SERVER_BASE_URL}/api/cities`)
+					.get(`/api/cities`)
 					.then((response) => {
 						const sortedCities = response.data.sort((a: City, b: City) =>
 							a.cityName.localeCompare(b.cityName)
@@ -314,6 +317,24 @@ const Cities: React.FC = () => {
 					</Form>
 				</Modal>
 			)}
+			<Row className='position-absolute bottom-50 end-500 z-2'>
+				<Col
+					md={12}
+					className='mb-2'
+				>
+					<Toast
+						onClose={() => setShowToast(false)}
+						show={showToast}
+						delay={2000}
+						autohide
+					>
+						{/* <Toast.Header>
+							<strong className='me-auto'>Notification</strong>
+						</Toast.Header> */}
+						<Toast.Body>{toastMessage}</Toast.Body>
+					</Toast>
+				</Col>
+			</Row>
 		</div>
 	);
 };
