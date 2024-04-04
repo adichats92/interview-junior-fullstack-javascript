@@ -2,7 +2,6 @@ import { Routes, Route } from 'react-router-dom';
 import Cities from './Cities';
 import NewCity from './NewCity';
 import CityDetails from './CityDetails';
-import UpdateCity from './UpdateCity';
 
 const Main: React.FC = () => {
 	return (
@@ -19,10 +18,6 @@ const Main: React.FC = () => {
 				<Route
 					path='/cities/:id'
 					element={<CityDetails />}
-				/>
-				<Route
-					path='/cities/:id/update'
-					element={<UpdateCity />}
 				/>
 			</Routes>
 		</main>

@@ -32,9 +32,10 @@ const getCityById = async (req, res) => {
 const getCityByName = async (req, res) => {
 	const { cityName } = req.params;
 	try {
-		// using regex for match by search input and 'i' for case insensitive
-		const regex = new RegExp(`^${cityName}`, 'i');
+		// using regex for match by search input and 'i' for case insensitive, (optional: limit of 5 results per req in case needed for big data)
+		const regex = new RegExp(`${cityName}`, 'i');
 		const cities = await City.find({ cityName: regex });
+		// .limit(5);
 		if (cities.length === 0) {
 			res.status(404).json({ message: `City with name ${cityName} Not Found` });
 		} else {

@@ -16,6 +16,6 @@ citiesRouter.get('/name/:cityName', getCityByName);
 citiesRouter.get('/', getAllCities);
 citiesRouter.put('/:id', updateCity);
 citiesRouter.post('/', createCity);
-citiesRouter.delete('/;id', deleteCity);
+citiesRouter.delete('/:id', deleteCity);
 
 module.exports = citiesRouter;

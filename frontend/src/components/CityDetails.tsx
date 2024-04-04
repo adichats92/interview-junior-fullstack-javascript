@@ -1,21 +1,30 @@
+import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-const CityDetails: React.FC<{
+interface City {
+	cityName: string;
+	count: number;
+}
+
+interface CityDetailsProps {
 	show: boolean;
 	onHide: () => void;
-	city: string;
-}> = ({ show, onHide, city }) => {
+	city: City;
+}
+
+const CityDetails: React.FC<CityDetailsProps> = ({ show, onHide, city }) => {
 	return (
 		<div>
 			<Modal
 				show={show}
 				onHide={onHide}
+				centered
 			>
-				<Modal.Header>
+				<Modal.Header closeButton>
 					<Modal.Title>{city.cityName}</Modal.Title>
 				</Modal.Header>
-				<Modal.Body>{city.count}</Modal.Body>
+				<Modal.Body>{`Count: ${city.count}`}</Modal.Body>
 				<Modal.Footer>
 					<Button
 						variant='secondary'
