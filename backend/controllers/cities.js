@@ -38,7 +38,7 @@ const getCityByName = async (req, res) => {
 		if (cities.length === 0) {
 			res.status(404).json({ message: `City with name ${cityName} Not Found` });
 		} else {
-			res.json(cities[0]);
+			res.json(cities);
 		}
 	} catch (error) {
 		res.status(500).json({ message: error.message });
